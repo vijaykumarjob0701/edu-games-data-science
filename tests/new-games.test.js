@@ -14,6 +14,8 @@ import {
   accuracy,
   predictValue,
   gradeChallenge as gradeClf,
+  resolveAnswer,
+  isModelQuiz,
   CHALLENGES as CLF_CHALLENGES,
 } from "../src/games/classifiers/engine.js";
 import {
@@ -108,6 +110,15 @@ describe("classifiers engine", () => {
     expect(gradeClf(prob, "logistic").points).toBe(3);
     expect(gradeClf(prob, "perceptron").points).toBe(1);
     expect(gradeClf(prob, "linear").points).toBe(0);
+  });
+
+  it("treats the overlay model as the answer on which-model quizzes", () => {
+    const prob = CLF_CHALLENGES.find((c) => c.id === "prob-task");
+    expect(isModelQuiz(prob)).toBe(true);
+    expect(resolveAnswer(prob, { model: "logistic" })).toBe("logistic");
+    const fail = CLF_CHALLENGES.find((c) => c.id === "ols-binary");
+    expect(isModelQuiz(fail)).toBe(false);
+    expect(resolveAnswer(fail, { model: "logistic" })).toBe(null);
   });
 });
 

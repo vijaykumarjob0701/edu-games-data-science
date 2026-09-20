@@ -205,6 +205,19 @@ export function decisionGrid(m, { lo = -2.6, hi = 2.6, n = 36 } = {}) {
   return { cells, lo, hi, n, step };
 }
 
+export function isModelQuiz(challenge) {
+  if (challenge.type !== "pick" || !challenge.options?.length) return false;
+  const ids = new Set(["linear", "logistic", "perceptron"]);
+  return challenge.options.every((opt) => ids.has(opt.id));
+}
+
+export function resolveAnswer(challenge, { pick = null, model = null } = {}) {
+  if (challenge.type === "fit") return null;
+  if (pick) return pick;
+  if (isModelQuiz(challenge) && model) return model;
+  return null;
+}
+
 export function gradeChallenge(challenge, answer) {
   if (challenge.type === "fit") {
     const acc = Number(answer);

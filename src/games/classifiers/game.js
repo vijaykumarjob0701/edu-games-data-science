@@ -8,7 +8,9 @@ import {
   accuracy,
   decisionGrid,
   gradeChallenge,
+  isModelQuiz,
   makePoints,
+  resolveAnswer,
   trainModel,
 } from "./engine.js";
 
@@ -31,6 +33,7 @@ export function classifiersPage(root) {
     epochs: 180,
     locked: null,
     pick: null,
+    hint: "",
     score: 0,
     recap: [],
   };
@@ -122,7 +125,8 @@ export function classifiersPage(root) {
           <p class="faint">${acc == null ? "Continuous target — read the plane, not accuracy." : `${MODELS.find((m) => m.id === state.model).name} accuracy ${(acc * 100).toFixed(0)}%`}</p>
         </section>
         <section class="panel">
-          <div class="choice-grid" role="group" aria-label="Model">
+          <p class="eyebrow">Overlay</p>
+          <div class="choice-grid" role="group" aria-label="Overlay model">
             ${MODELS.map(
               (m) => `
               <button class="choice" type="button" data-model="${m.id}" aria-pressed="${state.model === m.id}">
@@ -142,9 +146,12 @@ export function classifiersPage(root) {
               <label for="clf-ep">Epochs (${state.epochs})</label>
               <input id="clf-ep" data-slider="epochs" type="range" min="20" max="400" step="20" value="${state.epochs}" ${fb ? "disabled" : ""}/>
             </div>
-            <p class="faint">Target ≥ ${(ch.targetAcc * 100).toFixed(0)}% with logistic.</p>`
-              : `
-            <div class="choice-grid" role="group" aria-label="Answer" style="margin-top:12px">
+            <p class="faint">Target ≥ ${(ch.targetAcc * 100).toFixed(0)}% with logistic. Train by locking the current overlay.</p>`
+              : isModelQuiz(ch)
+                ? `<p class="faint" style="margin-top:12px">Your answer is the overlay model highlighted above. Switch it, watch the heat, then lock.</p>`
+                : `
+            <p class="eyebrow" style="margin-top:14px">Your answer</p>
+            <div class="choice-grid" role="group" aria-label="Answer">
               ${ch.options
                 .map(
                   (opt) => `
@@ -156,6 +163,7 @@ export function classifiersPage(root) {
                 .join("")}
             </div>`
           }
+          ${state.hint && !fb ? `<p class="faint" role="status">${escapeHtml(state.hint)}</p>` : ""}
           ${fb ? `<div class="feedback ${fb.points >= 2 ? "good" : fb.points === 1 ? "ok" : "bad"}" role="status"><p><strong>${escapeHtml(fb.label)}.</strong> ${escapeHtml(ch.learned)}</p></div>` : ""}
           <div class="actions">
             ${
@@ -180,12 +188,15 @@ export function classifiersPage(root) {
       state.phase = "play";
       state.locked = null;
       state.pick = null;
+      state.hint = "";
       state.model = CHALLENGES[0].model || "logistic";
       render();
     });
     listen("click", "[data-model]", (e, target) => {
       if (state.locked) return;
       state.model = target.getAttribute("data-model");
+      if (isModelQuiz(CHALLENGES[state.index])) state.pick = state.model;
+      state.hint = "";
       render();
     });
     listen("click", "[data-pick]", (e, target) => {
@@ -210,9 +221,16 @@ export function classifiersPage(root) {
         const acc = accuracy(fitted(), points());
         state.locked = gradeChallenge(ch, acc);
       } else {
-        if (!state.pick) return;
-        state.locked = gradeChallenge(ch, state.pick);
+        const answer = resolveAnswer(ch, { pick: state.pick, model: state.model });
+        if (!answer) {
+          state.hint = "Choose an answer first, then lock.";
+          render();
+          return;
+        }
+        state.pick = answer;
+        state.locked = gradeChallenge(ch, answer);
       }
+      state.hint = "";
       state.score += state.locked.points;
       state.recap.push(ch.learned);
       render();
@@ -223,6 +241,7 @@ export function classifiersPage(root) {
         state.index += 1;
         state.locked = null;
         state.pick = null;
+        state.hint = "";
         state.model = CHALLENGES[state.index].model || state.model;
       }
       render();
