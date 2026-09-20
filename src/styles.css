@@ -165,6 +165,13 @@ button { cursor: pointer; }
   margin-top: 28px;
 }
 .game-grid .secondary { display: grid; gap: 16px; }
+.game-grid.featured-row { grid-template-columns: 1fr; }
+.game-grid-all {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
 
 .card {
   background: var(--panel);
@@ -371,8 +378,33 @@ kbd {
   border: 0;
 }
 
+.tree-view {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  overflow: auto;
+  max-height: 170px;
+  white-space: pre;
+  color: var(--muted);
+}
+.net-trace { display: grid; gap: 6px; margin-top: 10px; }
+.trace-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.net-chart text { font-family: var(--mono); }
+
+@media (min-width: 980px) {
+  .game-grid-all { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 @media (max-width: 860px) {
-  .game-grid, .scenario, .sim-grid, .kpis { grid-template-columns: 1fr; }
+  .game-grid, .game-grid-all, .scenario, .sim-grid, .kpis { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
