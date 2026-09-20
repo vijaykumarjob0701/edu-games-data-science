@@ -2,7 +2,6 @@ import { homePage } from "./pages/home.js";
 import { boostingPage } from "./games/boosting/game.js";
 import { overfittingPage } from "./games/overfitting/game.js";
 import { samplingPage } from "./games/sampling/game.js";
-import { lock } from "./auth.js";
 
 const routes = {
   "": homePage,
@@ -23,9 +22,6 @@ export function startRouter(root) {
     if (page.teardown) teardown = page.teardown;
   };
 
-  root.addEventListener("click", (event) => {
-    if (event.target.closest("[data-action=signout]")) lock();
-  });
   window.addEventListener("hashchange", render);
   if (!location.hash) location.hash = "#/";
   else render();

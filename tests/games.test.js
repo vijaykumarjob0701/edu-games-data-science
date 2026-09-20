@@ -1,26 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { makeToken, tokensMatch, parseCookie, serializeSessionCookie } from "../netlify/lib/session.mjs";
 import { gradePick, scoreLibraries, starsFromRatio } from "../src/games/boosting/recommend.js";
 import { LAB_BRIEFS } from "../src/games/boosting/scenarios.js";
 import { evaluate, makeSplit, ARENAS, gradeArena } from "../src/games/overfitting/engine.js";
 import { gradeMethod, RACES, buildPopulation, takeSample, meanOf } from "../src/games/sampling/engine.js";
-
-describe("session cookies", () => {
-  it("creates a stable HMAC token and rejects mismatches", () => {
-    const token = makeToken("unit-test-secret");
-    expect(token).toHaveLength(64);
-    expect(tokensMatch(token, makeToken("unit-test-secret"))).toBe(true);
-    expect(tokensMatch(token, makeToken("other"))).toBe(false);
-    expect(tokensMatch("", token)).toBe(false);
-  });
-
-  it("round-trips the cookie name", () => {
-    const cookie = serializeSessionCookie("abc123", { secure: false });
-    expect(parseCookie(cookie)).toBe("abc123");
-    expect(cookie).toContain("HttpOnly");
-    expect(cookie).not.toContain("Secure");
-  });
-});
 
 describe("boosting recommendations", () => {
   it("grades exact and acceptable picks", () => {

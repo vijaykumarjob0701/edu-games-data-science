@@ -3,7 +3,6 @@ dist
 .DS_Store
 .env
 .env.*
-!.env.example
 *.local
 .vite
 coverage

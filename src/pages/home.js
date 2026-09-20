@@ -45,7 +45,7 @@ export function homePage(root) {
           <section class="hero">
             <p class="eyebrow">Classroom arcade for tabular instincts</p>
             <h1>Train on purpose.<br/>Hold out the hype.</h1>
-            <p class="lede">Three short labs for data science students. Progress lives in this browser. Unlock once with the site password; the games then remember your stars locally.</p>
+            <p class="lede">Three short labs for data science students. Progress lives in this browser — the games remember your stars locally.</p>
           </section>
           <section class="kpis" aria-label="Progress">
             <div class="kpi"><div class="label">Stars</div><div class="value">${totalStars(progress)} / 15</div></div>

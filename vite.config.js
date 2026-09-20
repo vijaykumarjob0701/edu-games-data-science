@@ -1,18 +1,11 @@
-import { defineConfig, loadEnv } from "vite";
-import { passwordGatePlugin } from "./plugins/password-gate.js";
+import { defineConfig } from "vite";
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
-  const sitePassword = env.SITE_PASSWORD || process.env.SITE_PASSWORD || "";
-
-  return {
-    plugins: [passwordGatePlugin(sitePassword)],
-    test: {
-      environment: "node",
-      include: ["tests/**/*.test.js"],
-    },
-    build: {
-      assetsInlineLimit: 0,
-    },
-  };
+export default defineConfig({
+  test: {
+    environment: "node",
+    include: ["tests/**/*.test.js"],
+  },
+  build: {
+    assetsInlineLimit: 0,
+  },
 });

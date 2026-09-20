@@ -34,7 +34,6 @@ export function layout({ title, body, footer = "" }) {
         </a>
         <div class="top-actions">
           <a class="btn btn-ghost" href="#/">All games</a>
-          <button class="btn" type="button" data-action="signout">Sign out</button>
         </div>
       </header>
       <main id="main" class="wrap" tabindex="-1">${body}</main>
