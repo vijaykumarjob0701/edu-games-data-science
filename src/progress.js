@@ -12,14 +12,17 @@ export const GAMES = [
   { id: "boosting", title: "Boosting Showdown" },
   { id: "overfitting", title: "Overfitting Arena" },
   { id: "sampling", title: "Sampling Bias Race" },
+  { id: "classifiers", title: "Linear vs Logistic vs Perceptron" },
+  { id: "mlp", title: "MLP Lab" },
+  { id: "descent", title: "Gradient Descent Playground" },
+  { id: "backprop", title: "Forward & Backprop" },
+  { id: "tree", title: "Decision Tree Builder" },
 ];
 
 export function defaultProgress() {
-  return {
-    boosting: emptyGame(),
-    overfitting: emptyGame(),
-    sampling: emptyGame(),
-  };
+  const progress = {};
+  for (const game of GAMES) progress[game.id] = emptyGame();
+  return progress;
 }
 
 export function loadProgress() {
